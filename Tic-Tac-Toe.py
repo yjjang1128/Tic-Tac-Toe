@@ -1,25 +1,22 @@
 def insert_letter(pos, letter):
     board[pos] = letter
 
-def player1():
-    pos = int(input())
-    letter = "O"
-    insert_letter(pos, letter)
-    print(board)
-    if win(letter) == True:
+def is_space_free(pos, letter):
+    if board[pos] == ' ':
         return True
-    else:
-        return False
 
-def player2():
-    pos = int(input())
-    letter = "X"
-    insert_letter(pos, letter)
-    print(board)
-    if win(letter) == True:
-        return True
-    else:
-        return False
+def img():
+    return """
+ {} | {} | {}
+---|---|---
+ {} | {} | {}
+---|---|---
+ {} | {} | {}
+""".format(board[0], board[1], board[2],
+           board[3], board[4], board[5],
+           board[6], board[7], board[8])
+
+
 
 # If win, return True
 def win(let):
@@ -37,24 +34,76 @@ def win(let):
         (board[2] == board[4] == board[6] == let)
         )
 
+
+def player1():
+    run = True
+    letter = 'O'
+    while run:
+        try:
+            pos = int(input())
+            if (0 <= pos) and (pos <= 8):
+                if is_space_free(pos, letter):
+                    insert_letter(pos, letter)
+                    print(img())
+                    run = False
+                    return game_end(letter)
+                else: 
+                    print('That space has already been selected.')
+            else: 
+                print("Enter an integer between '0' and '8'.")
+        except:
+            print("Input int.")
+
+
+def player2():
+    run = True
+    letter = 'X'
+    while run:
+        try:
+            pos = int(input())
+            if (0 <= pos) and (pos <= 8):
+                if is_space_free(pos, letter):
+                    insert_letter(pos, letter)
+                    print(img())
+                    run = False
+                    return game_end(letter)
+                else: 
+                    print('That space has already been selected.')
+            else: 
+                print("Enter an integer between '0' and '8'.")
+        except:
+            print("Input int.")
+
+def game_end(let):
+    if win(let):
+        return 'win'
+    elif board.count(' ') == 0:
+        return 'draw'
+    else:
+        return 'keep'
+
 def draw():
-    if board.count(" ") == 0:
+    if board.count(' ') == 0:
         return True
 
 def game_start():
+    # Create board.
     global board
     board = [' ' for _ in range(9)]
-    game_end = False
-
+    print(img())
     while True:
-        if game_end == True:
+        ans1 = player1()
+        if ans1 == 'win':
+            print('player1 you win')
             break
-        else:
-            game_end = player1()
         
-        if game_end == True:
+        if ans1 == 'draw':
+            print('draw')
             break
-        else:   
-            game_end = player2()
+
+        ans2 = player2()
+        if ans2 == 'win':
+            print('player2 you win')
+            break
 
 game_start()
